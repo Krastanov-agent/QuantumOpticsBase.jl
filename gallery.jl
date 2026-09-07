@@ -1,7 +1,6 @@
 using QuantumOptics
 using CairoMakie
 
-
 b = SpinBasis(1//2)
 psi = (spinup(b) + spindown(b)) / sqrt(2)
 fig, ax, plot = blochsphereplot(psi;
@@ -10,20 +9,21 @@ fig, ax, plot = blochsphereplot(psi;
 save("bloch-pure.png", fig) #hide
 nothing #hide
 
-
 b = SpinBasis(1//2)
-rho = 0.7dm(spinup(b)) + 0.3dm(spindown(b))
-fig = Figure(size=(640, 480))
-ax = Axis3(fig[1, 1]; title="70% spin up, 30% spin down",
-    xlabel="⟨σx⟩", ylabel="⟨σy⟩", zlabel="⟨σz⟩", aspect=:equal)
-blochsphereplot!(ax, rho)
+fig = Figure(size=(960, 360))
+for (i, r) in enumerate((1.0, 0.4, 0.04))
+    rho = (1+r)/2 * dm(spinup(b)) + (1-r)/2 * dm(spindown(b))
+    ax = Axis3(fig[1, i]; title="Bloch length = $r", aspect=:data)
+    blochsphereplot!(ax, rho)
+    hidedecorations!(ax)
+    hidespines!(ax)
+end
 save("bloch-mixed.png", fig) #hide
 nothing #hide
 
-
-fig = with_theme(theme_dark(); BlochSpherePlot=(spherecolor=(:gray65, 0.2),
-        wireframecolor=(:gray80, 0.6), wireframewidth=1.5,
-        sphereresolution=(16, 8), color=:white)) do
+fig = with_theme(theme_dark(); BlochSpherePlot=(spherecolor=(:gray65, 0.03),
+        wireframecolor=(:gray80, 0.35), wireframewidth=1,
+        sphereresolution=(8, 4), color=:white, cycle=[])) do
     b = SpinBasis(1//2)
     psi = (spinup(b) + im * spindown(b)) / sqrt(2)
     fig, ax, plot = blochsphereplot(psi;
@@ -35,14 +35,12 @@ end
 save("bloch-dark.png", fig) #hide
 nothing #hide
 
-
 b = FockBasis(20)
 fig, ax, plot = fockdistributionplot(coherentstate(b, 2);
     axis=(title="Coherent state, α = 2", xlabel="Occupation n", ylabel="P(n)"),
     figure=(size=(640, 400),))
 save("fock-coherent.png", fig) #hide
 nothing #hide
-
 
 b = FockBasis(12, 4)
 fig, ax, plot = fockdistributionplot(fockstate(b, 7);
@@ -51,7 +49,6 @@ fig, ax, plot = fockdistributionplot(fockstate(b, 7);
     figure=(size=(640, 400),))
 save("fock-offset.png", fig) #hide
 nothing #hide
-
 
 b = FockBasis(30)
 psi = coherentstate(b, 2)
@@ -65,7 +62,6 @@ axislegend(ax)
 save("fock-comparison.png", fig) #hide
 nothing #hide
 
-
 b = FockBasis(30)
 x = range(-4, 5; length=151)
 p = range(-4, 4; length=151)
@@ -75,7 +71,6 @@ fig, ax, plot = wignerplot(coherentstate(b, 1 + 0.5im), x, p;
 Colorbar(fig[1, 2], plot; label="W(x, p)")
 save("wigner-coherent.png", fig) #hide
 nothing #hide
-
 
 fig = with_theme(Theme(WignerPlot=(colorrange=(-1/pi, 1/pi),))) do
     b = FockBasis(10)
@@ -89,7 +84,6 @@ end
 save("wigner-negative.png", fig) #hide
 nothing #hide
 
-
 b = FockBasis(30)
 psi = normalize(coherentstate(b, 2) + coherentstate(b, -2))
 x = range(-5, 5; length=201)
@@ -101,7 +95,6 @@ Colorbar(fig[1, 2], plot; label="W(x, p)")
 save("wigner-cat.png", fig) #hide
 nothing #hide
 
-
 b = PositionBasis(-6, 6, 256)
 psi = gaussianstate(b, 1, 2, 1)
 fig, ax, plot = wavefunctionplot(psi;
@@ -109,7 +102,6 @@ fig, ax, plot = wavefunctionplot(psi;
     figure=(size=(640, 400),))
 save("wavefunction-position.png", fig) #hide
 nothing #hide
-
 
 b = PositionBasis(-6, 6, 256)
 psi = gaussianstate(b, 0, 3, 1.5)
@@ -121,7 +113,6 @@ wavefunctionplot!(ax, psi; component=imag, label="Im ψ(x)")
 axislegend(ax)
 save("wavefunction-components.png", fig) #hide
 nothing #hide
-
 
 bx = PositionBasis(-32, 32, 512)
 bp = MomentumBasis(bx)

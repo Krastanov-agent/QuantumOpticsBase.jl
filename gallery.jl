@@ -21,7 +21,9 @@ save("bloch-mixed.png", fig) #hide
 nothing #hide
 
 
-fig = with_theme(theme_dark(); BlochSpherePlot=(spherecolor=:gray65, color=:white)) do
+fig = with_theme(theme_dark(); BlochSpherePlot=(spherecolor=(:gray65, 0.2),
+        wireframecolor=(:gray80, 0.6), wireframewidth=1.5,
+        sphereresolution=(16, 8), color=:white)) do
     b = SpinBasis(1//2)
     psi = (spinup(b) + im * spindown(b)) / sqrt(2)
     fig, ax, plot = blochsphereplot(psi;
@@ -75,7 +77,7 @@ save("wigner-coherent.png", fig) #hide
 nothing #hide
 
 
-fig = with_theme(Theme(WignerPlot=(colormap=:RdBu, colorrange=(-1/pi, 1/pi)))) do
+fig = with_theme(Theme(WignerPlot=(colorrange=(-1/pi, 1/pi),))) do
     b = FockBasis(10)
     x = p = range(-4, 4; length=151)
     fig, ax, plot = wignerplot(fockstate(b, 1), x, p;
@@ -94,7 +96,7 @@ x = range(-5, 5; length=201)
 p = range(-3, 3; length=151)
 fig = Figure(size=(640, 440))
 ax = Axis(fig[1, 1]; title="Even cat state", xlabel="Position x", ylabel="Momentum p", aspect=DataAspect())
-plot = wignerplot!(ax, dm(psi), x, p; colormap=:RdBu, colorrange=(-1/pi, 1/pi))
+plot = wignerplot!(ax, dm(psi), x, p; colorrange=(-1/pi, 1/pi))
 Colorbar(fig[1, 2], plot; label="W(x, p)")
 save("wigner-cat.png", fig) #hide
 nothing #hide
